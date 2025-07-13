@@ -1,18 +1,19 @@
-// ResponderChecklist.jsx
+// client/src/components/ResponderChecklist.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // Si usas react-router para obtener el ID del checklist
+import { Box, Heading, Text, Button, Progress, RadioGroup, Stack, Radio, Textarea, FormControl, FormLabel, Flex, useToast } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
+import { FaArrowLeft, FaArrowRight, FaSave, FaCheckCircle } from 'react-icons/fa'; // Iconos
 
 const ResponderChecklist = () => {
-  const { checklistId } = useParams(); // Obtener ID del checklist de la URL
+  const { checklistId } = useParams(); 
   const [preguntas, setPreguntas] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [respuestas, setRespuestas] = useState({});
-  const [confirmMessage, setConfirmMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const toast = useToast(); // Hook para mostrar mensajes
 
   useEffect(() => {
     // Simular carga de preguntas del checklist
-    // En una app real, aquí harías una llamada a tu API
+    // En una app real, aquí harías una llamada a tu API usando checklistId
     const fetchedPreguntas = [
       { id: 1, texto: '¿Se han identificado las partes interesadas relevantes para el SGC?', obligatorio: true },
       { id: 2, texto: '¿Se ha definido el alcance del Sistema de Gestión de Calidad (SGC)?', obligatorio: true },
@@ -32,15 +33,14 @@ const ResponderChecklist = () => {
 
   const currentQuestion = preguntas[currentQuestionIndex];
 
-  const handleOptionChange = (e) => {
+  const handleOptionChange = (value) => {
     setRespuestas({
       ...respuestas,
       [currentQuestion.id]: {
         ...respuestas[currentQuestion.id],
-        opcion: e.target.value,
+        opcion: value,
       },
     });
-    setErrorMessage('');
   };
 
   const handleObservationsChange = (e) => {
@@ -55,173 +55,151 @@ const ResponderChecklist = () => {
 
   const handleNext = () => {
     if (currentQuestion.obligatorio && !respuestas[currentQuestion.id]?.opcion) {
-      setErrorMessage('Por favor, seleccione una opción para esta pregunta obligatoria.');
+      toast({
+        title: "Error de Validación",
+        description: "Por favor, seleccione una opción para esta pregunta obligatoria.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
-    setErrorMessage('');
+    
     // Simular guardar respuesta (en una app real, aquí harías una llamada a tu API)
-    setConfirmMessage('Respuesta guardada temporalmente.');
-    setTimeout(() => setConfirmMessage(''), 1500);
+    toast({
+      title: "Respuesta guardada",
+      description: "Su respuesta ha sido guardada temporalmente.",
+      status: "success",
+      duration: 1500,
+      isClosable: true,
+    });
 
     if (currentQuestionIndex < preguntas.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      // Si es la última pregunta, preparar para finalizar
-      alert('Has llegado al final del checklist. Haz clic en "Finalizar Autoevaluación".');
+      toast({
+        title: "Fin del Checklist",
+        description: "Has llegado al final del checklist. Haz clic en 'Finalizar Autoevaluación'.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setErrorMessage('');
     }
   };
 
   const handleSaveAndExit = () => {
     // Lógica para guardar el progreso y salir
-    alert('Progreso guardado y saliendo del checklist.');
-    window.location.href = '/checklists'; // Volver al listado
+    toast({
+      title: "Progreso guardado",
+      description: "Su progreso ha sido guardado y está saliendo del checklist.",
+      status: "info",
+      duration: 2000,
+      isClosable: true,
+    });
+    setTimeout(() => { window.location.href = '/listado-checklists'; }, 1000); // Volver al listado
   };
 
   const handleFinishAutoevaluacion = () => {
-    // Validar todas las preguntas obligatorias antes de finalizar
     const allObligatoryAnswered = preguntas.every(q => 
       !q.obligatorio || (q.obligatorio && respuestas[q.id]?.opcion)
     );
 
     if (!allObligatoryAnswered) {
-      setErrorMessage('Por favor, responda todas las preguntas obligatorias antes de finalizar.');
+      toast({
+        title: "Error de Finalización",
+        description: "Por favor, responda todas las preguntas obligatorias antes de finalizar.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
     
-    alert('Autoevaluación completada exitosamente. Actualizando Dashboard.');
-    window.location.href = '/dashboard'; // Volver al dashboard actualizado
+    toast({
+      title: "Autoevaluación Completada",
+      description: "Autoevaluación completada exitosamente. Actualizando Dashboard...",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+    setTimeout(() => { window.location.href = '/dashboard'; }, 1000); // Volver al dashboard
   };
 
-  if (!currentQuestion) {
+  if (preguntas.length === 0 || !currentQuestion) {
     return (
-      <div className="container py-5 text-center">
-        <h1 className="text-dark-blue">Cargando Checklist...</h1>
-        <p className="text-muted">Por favor, espere.</p>
-      </div>
+      <Box p={5} textAlign="center">
+        <Heading as="h1" size="xl" color="purple.800">Cargando Checklist...</Heading>
+        <Text color="gray.600">Por favor, espere.</Text>
+      </Box>
     );
   }
 
   const progresoActual = Math.round(((currentQuestionIndex + (respuestas[currentQuestion.id]?.opcion ? 1 : 0)) / preguntas.length) * 100);
 
   return (
-    <div className="container py-5">
-      <h1 className="mb-4 text-center text-dark-blue">Autoevaluación: Checklist de Calidad</h1> {/* Nombre del checklist real */}
-      <div className="card shadow-sm p-4">
-        {confirmMessage && (
-          <div className="alert alert-success alert-dismissible fade show" role="alert">
-            {confirmMessage}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        )}
-        {errorMessage && (
-          <div className="alert alert-danger alert-dismissible fade show" role="alert">
-            {errorMessage}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        )}
+    <Box p={5}>
+      <Heading as="h1" size="xl" textAlign="center" mb={6} color="purple.800">Autoevaluación: Checklist de Calidad</Heading>
+      <Card shadow="md" rounded="lg" p={5}>
+        <Progress value={progresoActual} size="lg" colorScheme="purple" mb={4} hasStripe isAnimated />
+        <Text textAlign="center" color="gray.600" mb={6}>Pregunta {currentQuestionIndex + 1} de {preguntas.length}</Text>
 
-        <div className="progress mb-4" style={{ height: '25px' }}>
-          <div 
-            className="progress-bar bg-primary-custom" 
-            role="progressbar" 
-            style={{ width: `${progresoActual}%` }} 
-            aria-valuenow={progresoActual} 
-            aria-valuemin="0" 
-            aria-valuemax="100"
-          >
-            Pregunta {currentQuestionIndex + 1} de {preguntas.length} ({progresoActual}%)
-          </div>
-        </div>
-
-        <div className="mb-4 text-start">
-          <h4 className="text-hero-muted">
+        <Box mb={6} textAlign="start">
+          <Heading as="h4" size="lg" color="purple.800">
             {currentQuestion.texto}
-            {currentQuestion.obligatorio && <span className="text-danger ms-2">*</span>}
-          </h4>
-        </div>
+            {currentQuestion.obligatorio && <Text as="span" color="red.500" ml={2}>*</Text>}
+          </Heading>
+        </Box>
 
-        <div className="mb-3 text-start">
-          <div className="form-check">
-            <input 
-              className="form-check-input" 
-              type="radio" 
-              name={`pregunta_${currentQuestion.id}`} 
-              id={`cumple_${currentQuestion.id}`} 
-              value="Cumple" 
-              checked={respuestas[currentQuestion.id]?.opcion === 'Cumple'} 
-              onChange={handleOptionChange} 
-            />
-            <label className="form-check-label" htmlFor={`cumple_${currentQuestion.id}`}>
-              Cumple
-            </label>
-          </div>
-          <div className="form-check">
-            <input 
-              className="form-check-input" 
-              type="radio" 
-              name={`pregunta_${currentQuestion.id}`} 
-              id={`noCumple_${currentQuestion.id}`} 
-              value="No Cumple" 
-              checked={respuestas[currentQuestion.id]?.opcion === 'No Cumple'} 
-              onChange={handleOptionChange} 
-            />
-            <label className="form-check-label" htmlFor={`noCumple_${currentQuestion.id}`}>
-              No Cumple
-            </label>
-          </div>
-          <div className="form-check">
-            <input 
-              className="form-check-input" 
-              type="radio" 
-              name={`pregunta_${currentQuestion.id}`} 
-              id={`noAplica_${currentQuestion.id}`} 
-              value="No Aplica" 
-              checked={respuestas[currentQuestion.id]?.opcion === 'No Aplica'} 
-              onChange={handleOptionChange} 
-            />
-            <label className="form-check-label" htmlFor={`noAplica_${currentQuestion.id}`}>
-              No Aplica
-            </label>
-          </div>
-        </div>
+        <FormControl mb={6}>
+          <RadioGroup onChange={handleOptionChange} value={respuestas[currentQuestion.id]?.opcion || ''}>
+            <Stack direction="column">
+              <Radio value="Cumple" colorScheme="purple">Cumple</Radio>
+              <Radio value="No Cumple" colorScheme="purple">No Cumple</Radio>
+              <Radio value="No Aplica" colorScheme="purple">No Aplica</Radio>
+            </Stack>
+          </RadioGroup>
+        </FormControl>
 
-        <div className="mb-3 text-start">
-          <label htmlFor={`observaciones_${currentQuestion.id}`} className="form-label text-hero-muted">Observaciones (Opcional)</label>
-          <textarea 
-            className="form-control" 
-            id={`observaciones_${currentQuestion.id}`} 
-            rows="3" 
+        <FormControl mb={6}>
+          <FormLabel color="purple.700">Observaciones (Opcional)</FormLabel>
+          <Textarea 
             value={respuestas[currentQuestion.id]?.observaciones || ''} 
             onChange={handleObservationsChange}
-          ></textarea>
-        </div>
+            placeholder="Añade aquí tus comentarios o evidencias..."
+          />
+        </FormControl>
 
-        <div className="d-flex justify-content-between mt-4">
-          <button className="btn btn-outline-custom" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
+        <Flex justify="space-between" mt={4}>
+          <Button 
+            variant="outline" 
+            colorScheme="purple" 
+            leftIcon={<FaArrowLeft />} 
+            onClick={handlePrevious} 
+            isDisabled={currentQuestionIndex === 0}
+          >
             Anterior
-          </button>
+          </Button>
           {currentQuestionIndex < preguntas.length - 1 ? (
-            <button className="btn btn-primary-custom" onClick={handleNext}>
+            <Button colorScheme="purple" rightIcon={<FaArrowRight />} onClick={handleNext}>
               Siguiente Pregunta
-            </button>
+            </Button>
           ) : (
-            <button className="btn btn-primary-custom" onClick={handleFinishAutoevaluacion}>
+            <Button colorScheme="purple" rightIcon={<FaCheckCircle />} onClick={handleFinishAutoevaluacion}>
               Finalizar Autoevaluación
-            </button>
+            </Button>
           )}
-        </div>
-        <button className="btn btn-secondary mt-3" onClick={handleSaveAndExit}>
-            Guardar y Salir
-        </button>
-      </div>
-    </div>
+        </Flex>
+        <Button variant="ghost" colorScheme="purple" mt={4} onClick={handleSaveAndExit}>
+            <FaSave style={{ marginRight: '0.5rem' }} /> Guardar y Salir
+        </Button>
+      </Card>
+    </Box>
   );
 };
 
