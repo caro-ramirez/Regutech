@@ -1,6 +1,6 @@
 // client/src/components/ResponderChecklist.jsx
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Text, Button, Progress, RadioGroup, Stack, Radio, Textarea, FormControl, FormLabel, Flex, useToast } from '@chakra-ui/react';
+import { Box, Heading, Text, Button, Progress, RadioGroup, Stack, Radio, Textarea, FormControl, FormLabel, Flex, useToast, Card } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { FaArrowLeft, FaArrowRight, FaSave, FaCheckCircle } from 'react-icons/fa'; // Iconos
 
@@ -9,11 +9,9 @@ const ResponderChecklist = () => {
   const [preguntas, setPreguntas] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [respuestas, setRespuestas] = useState({});
-  const toast = useToast(); // Hook para mostrar mensajes
+  const toast = useToast();
 
   useEffect(() => {
-    // Simular carga de preguntas del checklist
-    // En una app real, aquí harías una llamada a tu API usando checklistId
     const fetchedPreguntas = [
       { id: 1, texto: '¿Se han identificado las partes interesadas relevantes para el SGC?', obligatorio: true },
       { id: 2, texto: '¿Se ha definido el alcance del Sistema de Gestión de Calidad (SGC)?', obligatorio: true },
@@ -23,7 +21,6 @@ const ResponderChecklist = () => {
     ];
     setPreguntas(fetchedPreguntas);
 
-    // Cargar respuestas guardadas previamente si existen (simulado)
     const savedResponses = {
       1: { opcion: 'Cumple', observaciones: 'Documento de partes interesadas actualizado.' },
       2: { opcion: 'Cumple', observaciones: '' },
@@ -65,7 +62,6 @@ const ResponderChecklist = () => {
       return;
     }
     
-    // Simular guardar respuesta (en una app real, aquí harías una llamada a tu API)
     toast({
       title: "Respuesta guardada",
       description: "Su respuesta ha sido guardada temporalmente.",
@@ -94,7 +90,6 @@ const ResponderChecklist = () => {
   };
 
   const handleSaveAndExit = () => {
-    // Lógica para guardar el progreso y salir
     toast({
       title: "Progreso guardado",
       description: "Su progreso ha sido guardado y está saliendo del checklist.",

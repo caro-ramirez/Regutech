@@ -1,6 +1,6 @@
 // client/src/components/ListadoPoliticas.jsx
 import React from 'react';
-import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Badge, Flex, useColorModeValue } from '@chakra-ui/react';
+import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Badge, Flex, useColorModeValue, Card } from '@chakra-ui/react';
 import { FaScroll, FaCheckCircle, FaHourglassHalf } from 'react-icons/fa'; // Iconos
 
 const ListadoPoliticas = () => {
@@ -17,7 +17,6 @@ const ListadoPoliticas = () => {
   const headerBg = useColorModeValue('purple.50', 'gray.800');
 
   const handleVerPoliticaClick = (id) => {
-    // Aquí iría la lógica de redirección a la pantalla de visualización de política
     console.log(`Redirigiendo para ver Política ${id}`);
     window.location.href = `/ver-politica/${id}`;
   };

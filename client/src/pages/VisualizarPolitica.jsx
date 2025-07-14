@@ -1,6 +1,6 @@
 // client/src/components/VisualizarPolitica.jsx
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Text, Button, Flex, FormControl, FormLabel, Checkbox, useToast } from '@chakra-ui/react';
+import { Box, Heading, Text, Button, Flex, FormControl, FormLabel, Checkbox, useToast, Card } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom'; // Si usas react-router
 import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa'; // Iconos
 
@@ -12,9 +12,8 @@ const VisualizarPolitica = () => {
   const toast = useToast();
 
   useEffect(() => {
-    // Simular carga de política
     const fetchedPolitica = {
-      id: politicaId, // Usamos el ID de la URL
+      id: politicaId,
       nombre: 'Política de Prevención de Lavado de Activos (PLA/FT)', 
       contenido: `
         <h3>Introducción a la Política de PLA/FT</h3>
@@ -45,8 +44,7 @@ const VisualizarPolitica = () => {
 
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
-    // Comprobar si el usuario ha llegado al final del scroll (con un pequeño margen)
-    if (scrollHeight - scrollTop <= clientHeight + 5) { // +5px de margen
+    if (scrollHeight - scrollTop <= clientHeight + 5) {
       setHasScrolledToEnd(true);
     } else {
       setHasScrolledToEnd(false);
@@ -67,7 +65,6 @@ const VisualizarPolitica = () => {
       return;
     }
 
-    // Simular la confirmación de lectura
     setConfirmado(true);
     toast({
       title: "Lectura Confirmada",
@@ -76,8 +73,7 @@ const VisualizarPolitica = () => {
       duration: 2000,
       isClosable: true,
     });
-    // En una app real, aquí harías una llamada a tu API para registrar la confirmación
-    setTimeout(() => { window.location.href = '/listado-politicas'; }, 1500); // Volver al listado
+    setTimeout(() => { window.location.href = '/listado-politicas'; }, 1500);
   };
 
   if (!politica) {
@@ -103,7 +99,7 @@ const VisualizarPolitica = () => {
         )}
 
         <Box 
-          className="policy-content" // Puedes añadir estilos específicos para policy-content en style.css si lo deseas
+          className="policy-content" 
           p={4} 
           borderWidth="1px" 
           borderColor="gray.200" 
@@ -111,7 +107,7 @@ const VisualizarPolitica = () => {
           mb={6} 
           maxH="450px" 
           overflowY="auto" 
-          dangerouslySetInnerHTML={{ __html: politica.contenido }} // Renderiza HTML desde el contenido
+          dangerouslySetInnerHTML={{ __html: politica.contenido }} 
           onScroll={handleScroll}
           sx={{
             '::-webkit-scrollbar': { width: '8px', borderRadius: '10px' },
@@ -135,7 +131,7 @@ const VisualizarPolitica = () => {
             colorScheme="purple" 
             rightIcon={<FaCheckCircle />} 
             onClick={handleConfirmarLectura} 
-            isDisabled={confirmado || !hasScrolledToEnd} // Deshabilitado si ya confirmó o no hizo scroll
+            isDisabled={confirmado || !hasScrolledToEnd}
           >
             Confirmar Lectura
           </Button>

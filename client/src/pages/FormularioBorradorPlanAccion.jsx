@@ -1,14 +1,14 @@
-// FormularioBorradorPlanAccion.jsx
-import React, { useState, useEffect } from 'react';
+// client/src/components/FormularioBorradorPlanAccion.jsx
+import React, { useState } from 'react';
+import { Box, Heading, Text, Button, FormControl, FormLabel, Input, Textarea, Select, Flex, useToast, Card } from '@chakra-ui/react';
+import { FaSave, FaBan } from 'react-icons/fa'; // Iconos
 
-const FormularioBorradorPlanAccion = ({ areaPrioritaria, accionPropuesta }) => {
+const FormularioBorradorPlanAccion = ({ areaPrioritaria = 'Área Crítica (Ejemplo)', accionPropuesta = 'Acción sugerida (Ejemplo)' }) => {
   const [responsableAsignado, setResponsableAsignado] = useState('');
   const [fechaLimite, setFechaLimite] = useState('');
   const [descripcionDetallada, setDescripcionDetallada] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const toast = useToast();
 
-  // Datos simulados de colaboradores
   const colaboradores = [
     { id: 'col1', nombre: 'Juan Pérez' },
     { id: 'col2', nombre: 'María Gómez' },
@@ -17,107 +17,80 @@ const FormularioBorradorPlanAccion = ({ areaPrioritaria, accionPropuesta }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-
+    
     if (!responsableAsignado || !fechaLimite || !descripcionDetallada) {
-      setErrorMessage('Por favor, complete todos los campos obligatorios del plan de acción.');
+      toast({
+        title: "Error de Validación",
+        description: "Por favor, complete todos los campos obligatorios del plan de acción.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
-    // Simular guardado del plan de acción
-    alert(`Plan de Acción Finalizado para ${areaPrioritaria}: ${accionPropuesta}`);
-    setSuccessMessage('Plan de Acción guardado exitosamente.');
+    toast({
+      title: "Plan de Acción Guardado",
+      description: "El borrador de Plan de Acción ha sido guardado exitosamente.",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
     setTimeout(() => {
-      // Redirigir al dashboard o sección de reportes tras el éxito
       window.location.href = '/dashboard'; 
     }, 1500);
   };
 
-  // Estos valores vendrían del CU-002 principal que "genera" el borrador
-  const defaultArea = areaPrioritaria || 'Área no especificada';
-  const defaultAccion = accionPropuesta || 'Acción sugerida no definida';
-
   return (
-    <div className="container py-5">
-      <h1 className="mb-4 text-center text-dark-blue">Borrador de Plan de Acción de Mejora para: {defaultArea}</h1>
-      <div className="card shadow-sm p-4">
-        {successMessage && (
-          <div className="alert alert-success alert-dismissible fade show" role="alert">
-            {successMessage}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        )}
-        {errorMessage && (
-          <div className="alert alert-danger alert-dismissible fade show" role="alert">
-            {errorMessage}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        )}
-
+    <Box p={5}>
+      <Heading as="h1" size="xl" textAlign="center" mb={6} color="purple.800">Borrador de Plan de Acción de Mejora</Heading>
+      <Card shadow="md" rounded="lg" p={5}>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3 text-start">
-            <label className="form-label text-hero-muted">Área Afectada (Pre-llenado)</label>
-            <input type="text" className="form-control" value={defaultArea} readOnly />
-          </div>
+          <FormControl mb={4}>
+            <FormLabel color="purple.700">Área Afectada (Pre-llenado)</FormLabel>
+            <Input value={areaPrioritaria} isReadOnly />
+          </FormControl>
 
-          <div className="mb-3 text-start">
-            <label className="form-label text-hero-muted">Acción Propuesta (Pre-llenado)</label>
-            <input type="text" className="form-control" value={defaultAccion} readOnly />
-          </div>
+          <FormControl mb={4}>
+            <FormLabel color="purple.700">Acción Propuesta (Pre-llenado)</FormLabel>
+            <Input value={accionPropuesta} isReadOnly />
+          </FormControl>
 
-          <div className="mb-3 text-start">
-            <label htmlFor="responsableAsignado" className="form-label text-hero-muted">Responsable Asignado</label>
-            <select 
-              className="form-select" 
-              id="responsableAsignado" 
-              value={responsableAsignado} 
-              onChange={(e) => setResponsableAsignado(e.target.value)} 
-              required
-            >
-              <option value="">Seleccione un Colaborador...</option>
+          <FormControl mb={4} isRequired>
+            <FormLabel color="purple.700">Responsable Asignado</FormLabel>
+            <Select placeholder="Seleccione un Colaborador..." value={responsableAsignado} onChange={(e) => setResponsableAsignado(e.target.value)}>
               {colaboradores.map(col => (
                 <option key={col.id} value={col.nombre}>{col.nombre}</option>
               ))}
-            </select>
-          </div>
+            </Select>
+          </FormControl>
 
-          <div className="mb-3 text-start">
-            <label htmlFor="fechaLimite" className="form-label text-hero-muted">Fecha Límite</label>
-            <input 
-              type="date" 
-              className="form-control" 
-              id="fechaLimite" 
-              value={fechaLimite} 
-              onChange={(e) => setFechaLimite(e.target.value)} 
-              required 
-            />
-          </div>
+          <FormControl mb={4} isRequired>
+            <FormLabel color="purple.700">Fecha Límite</FormLabel>
+            <Input type="date" value={fechaLimite} onChange={(e) => setFechaLimite(e.target.value)} />
+          </FormControl>
 
-          <div className="mb-3 text-start">
-            <label htmlFor="descripcionDetallada" className="form-label text-hero-muted">Descripción Detallada del Plan</label>
-            <textarea
-              className="form-control"
-              id="descripcionDetallada"
-              rows="5"
+          <FormControl mb={6} isRequired>
+            <FormLabel color="purple.700">Descripción Detallada del Plan</FormLabel>
+            <Textarea
               value={descripcionDetallada}
               onChange={(e) => setDescripcionDetallada(e.target.value)}
               placeholder="Describa los pasos específicos para ejecutar esta acción de mejora..."
-              required
-            ></textarea>
-          </div>
+              rows={5}
+            />
+          </FormControl>
 
-          <div className="d-flex justify-content-between mt-4">
-            <button type="button" className="btn btn-outline-custom" onClick={() => window.history.back()}>
+          <Flex justify="space-between" mt={4}>
+            <Button variant="outline" colorScheme="purple" leftIcon={<FaBan />} onClick={() => window.history.back()}>
               Cancelar
-            </button>
-            <button type="submit" className="btn btn-primary-custom">
+            </Button>
+            <Button colorScheme="purple" rightIcon={<FaSave />} type="submit">
               Guardar Plan Final
-            </button>
-          </div>
+            </Button>
+          </Flex>
         </form>
-      </div>
-    </div>
+      </Card>
+    </Box>
   );
 };
 

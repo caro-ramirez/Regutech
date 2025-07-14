@@ -1,6 +1,6 @@
 // client/src/components/ListadoChecklists.jsx
 import React from 'react';
-import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Progress, Badge, Flex, useColorModeValue } from '@chakra-ui/react';
+import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Progress, Badge, Flex, useColorModeValue, Card } from '@chakra-ui/react';
 import { FaListCheck, FaCheckCircle, FaHourglassHalf } from 'react-icons/fa'; // Iconos
 
 const ListadoChecklists = () => {
@@ -11,14 +11,12 @@ const ListadoChecklists = () => {
     { id: 4, nombre: 'Checklist Sección 7: Recursos', estado: 'Pendiente', progreso: 0 },
   ];
 
-  // Usar hook de Chakra para colores según modo (light/dark)
   const cardBg = useColorModeValue('white', 'gray.700');
   const textColor = useColorModeValue('purple.800', 'purple.100');
   const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
   const headerBg = useColorModeValue('purple.50', 'gray.800');
 
   const handleResponderClick = (id) => {
-    // Aquí iría la lógica de redirección a la pantalla de responder checklist
     console.log(`Redirigiendo para responder Checklist ${id}`);
     window.location.href = `/responder-checklist/${id}`; 
   };
@@ -66,7 +64,7 @@ const ListadoChecklists = () => {
                       colorScheme="purple" 
                       size="sm" 
                       onClick={() => handleResponderClick(checklist.id)}
-                      isDisabled={checklist.estado === 'Completado'} // Se deshabilita para "Ver Respuestas"
+                      isDisabled={checklist.estado === 'Completado'}
                     >
                       {checklist.estado === 'Completado' ? 'Ver Respuestas' : 'Responder'}
                     </Button>

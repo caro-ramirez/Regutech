@@ -1,18 +1,18 @@
-// FormularioRegistroHallazgos.jsx
+// client/src/components/FormularioRegistroHallazgos.jsx
 import React, { useState, useEffect } from 'react';
+import { Box, Heading, Text, Button, FormControl, FormLabel, Textarea, Flex, useToast, Card } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom'; // Para obtener el ID del plan de auditoría
+import { FaSave, FaBan } from 'react-icons/fa'; // Iconos
 
 const FormularioRegistroHallazgos = () => {
   const { planId } = useParams(); // ID del plan de auditoría al que se asocia el hallazgo
   const [descripcionHallazgo, setDescripcionHallazgo] = useState('');
   const [observaciones, setObservaciones] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [planAuditoriaInfo, setPlanAuditoriaInfo] = useState(null); // Info del plan asociado
+  const toast = useToast();
 
   useEffect(() => {
     // Simular carga de información del plan de auditoría (para mostrar en el título)
-    // En una app real, harías una llamada a tu API con planId
     const fetchedPlanInfo = {
       id: planId,
       fecha: '2025-08-10',
@@ -23,86 +23,77 @@ const FormularioRegistroHallazgos = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-
+    
     if (!descripcionHallazgo) {
-      setErrorMessage('La descripción del hallazgo es obligatoria.');
+      toast({
+        title: "Error de Validación",
+        description: "La descripción del hallazgo es obligatoria.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
-    // Simular guardado
-    alert(`Registrando hallazgo para Plan ${planId}: ${descripcionHallazgo}`);
-    setSuccessMessage('Hallazgo registrado exitosamente.');
+    toast({
+      title: "Hallazgo Registrado",
+      description: "Hallazgo registrado exitosamente.",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
     setTimeout(() => {
-      // Redirigir al listado de auditorías o a una vista de detalle del plan
       window.location.href = '/listado-auditorias'; 
     }, 1500);
   };
 
   if (!planAuditoriaInfo) {
     return (
-      <div className="container py-5 text-center">
-        <h1 className="text-dark-blue">Cargando información del Plan...</h1>
-        <p className="text-muted">Por favor, espere.</p>
-      </div>
+      <Box p={5} textAlign="center">
+        <Heading as="h1" size="xl" color="purple.800">Cargando información del Plan...</Heading>
+        <Text color="gray.600">Por favor, espere.</Text>
+      </Box>
     );
   }
 
   return (
-    <div className="container py-5">
-      <h1 className="mb-4 text-center text-dark-blue">
+    <Box p={5}>
+      <Heading as="h1" size="xl" textAlign="center" mb={6} color="purple.800">
         Registrar Hallazgos para Auditoría: {planAuditoriaInfo.fecha} - {planAuditoriaInfo.area}
-      </h1>
-      <div className="card shadow-sm p-4">
-        {successMessage && (
-          <div className="alert alert-success alert-dismissible fade show" role="alert">
-            {successMessage}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        )}
-        {errorMessage && (
-          <div className="alert alert-danger alert-dismissible fade show" role="alert">
-            {errorMessage}
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        )}
-
+      </Heading>
+      <Card shadow="md" rounded="lg" p={5}>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3 text-start">
-            <label htmlFor="descripcionHallazgo" className="form-label text-hero-muted">Descripción del Hallazgo</label>
-            <textarea
-              className="form-control"
-              id="descripcionHallazgo"
-              rows="4"
+          <FormControl mb={4} isRequired>
+            <FormLabel color="purple.700">Descripción del Hallazgo</FormLabel>
+            <Textarea
               value={descripcionHallazgo}
               onChange={(e) => setDescripcionHallazgo(e.target.value)}
-              required
-            ></textarea>
-          </div>
+              placeholder="Ej: No se cumple con el procedimiento de verificación de identidad de clientes..."
+              rows={4}
+            />
+          </FormControl>
 
-          <div className="mb-3 text-start">
-            <label htmlFor="observaciones" className="form-label text-hero-muted">Observaciones (Opcional)</label>
-            <textarea
-              className="form-control"
-              id="observaciones"
-              rows="3"
+          <FormControl mb={6}>
+            <FormLabel color="purple.700">Observaciones (Opcional)</FormLabel>
+            <Textarea
               value={observaciones}
               onChange={(e) => setObservaciones(e.target.value)}
-            ></textarea>
-          </div>
+              placeholder="Ej: Se detectó falta de capacitación en el equipo de ventas."
+              rows={3}
+            />
+          </FormControl>
 
-          <div className="d-flex justify-content-between mt-4">
-            <button type="button" className="btn btn-outline-custom" onClick={() => window.history.back()}>
+          <Flex justify="space-between" mt={4}>
+            <Button variant="outline" colorScheme="purple" leftIcon={<FaBan />} onClick={() => window.history.back()}>
               Cancelar
-            </button>
-            <button type="submit" className="btn btn-primary-custom">
+            </Button>
+            <Button colorScheme="purple" rightIcon={<FaSave />} type="submit">
               Guardar Hallazgo
-            </button>
-          </div>
+            </Button>
+          </Flex>
         </form>
-      </div>
-    </div>
+      </Card>
+    </Box>
   );
 };
 

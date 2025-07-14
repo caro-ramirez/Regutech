@@ -1,8 +1,9 @@
+// client/src/pages/Dashboard.jsx
 import React, { useState } from 'react';
 import { Box, Heading, Text, Flex, SimpleGrid, Card, CardHeader, CardBody, Button, Link, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea, Select } from '@chakra-ui/react';
-import { FaExclamationTriangle, FaListCheck, FaScroll, FaChartLine, FaChartPie, FaBullseye, FaLightbulb, FaArrowAltCircleDown } from 'react-icons/fa'; // Iconos de FontAwesome para React
+import { FaExclamationTriangle, FaListCheck, FaScroll, FaChartLine, FaChartPie, FaBullseye, FaLightbulb, FaArrowAltCircleDown, FaExclamationCircle, FaCheckCircle, FaSave, FaArrowLeft, FaArrowRight, FaBookOpen, FaHourglassHalf, FaClipboardList } from 'react-icons/fa'; // Asegúrate de importar todos los iconos
 
-const dashboard = () => {
+const Dashboard = () => { // Renombrado de DashboardPrincipal a Dashboard
   // --- Datos de Ejemplo para CU-001 (Optimizar Cumplimiento Regulatorio) ---
   const porcentajeCumplimiento = 85;
   const areasRiesgoPotencial = [
@@ -19,7 +20,7 @@ const dashboard = () => {
     nombreTarea: 'Autoevaluación ISO 9001: Sección 7',
     mensaje: 'Tienes una autoevaluación crítica pendiente: ',
   };
-  const datosInsuficientesTendencias = false; 
+  const datosInsuficientesTendencias = false; // Simula si hay o no datos suficientes para proyectar
 
   // --- Datos de Ejemplo para CU-002 (Gestionar Riesgos y Mejoras Continuas) ---
   const mapaCalorRiesgos = {
@@ -50,12 +51,10 @@ const dashboard = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // Para el modal del borrador
 
-  // Estados para el formulario del borrador del plan de acción
   const [responsableAsignado, setResponsableAsignado] = useState('');
   const [fechaLimite, setFechaLimite] = useState('');
   const [descripcionDetallada, setDescripcionDetallada] = useState('');
 
-  // Datos simulados de colaboradores para el select
   const colaboradores = [
     { id: 'col1', nombre: 'Juan Pérez' },
     { id: 'col2', nombre: 'María Gómez' },
@@ -63,26 +62,23 @@ const dashboard = () => {
   ];
 
   const handleGuardarPlanFinal = () => {
-    // Validaciones básicas para el formulario del modal
     if (!responsableAsignado || !fechaLimite || !descripcionDetallada) {
       alert('Por favor, complete todos los campos obligatorios del plan de acción.');
       return;
     }
     alert(`Plan de Acción Finalizado para ${sugerenciaAccionMejoraPrioritaria.area} y asignado a ${responsableAsignado}! (Simulado)`);
-    onClose(); // Cierra el modal
-    // Aquí iría la lógica para enviar los datos a tu backend
+    onClose(); 
   };
-
 
   return (
     <Box p={5}>
       <Heading as="h1" size="xl" textAlign="center" mb={6} color="purple.800">Dashboard Principal</Heading>
 
-      {/* Sección Alerta Visual por Inactividad (Parte de CU-001) */}
+      {/* --- Sección de Alerta Visual por Inactividad (Parte de CU-001) --- */}
       {alertaInactividad.activa && (
         <Flex p={4} bg="orange.100" borderColor="orange.300" borderWidth="1px" borderRadius="lg" mb={6} align="center" justify="space-between">
           <Flex align="center">
-            <FaExclamationTriangle size="24px" color="orange.600" style={{ marginRight: '1rem' }} />
+            <i className="fas fa-exclamation-triangle me-3 fs-4 text-warning"></i>
             <Box>
               <Text fontWeight="bold" color="orange.800">¡Atención: Autoevaluación Pendiente!</Text>
               <Text fontSize="sm" color="orange.700">
@@ -96,7 +92,7 @@ const dashboard = () => {
         </Flex>
       )}
 
-      {/* Sección de Tareas de Compliance Pendientes (Parte de CU-001) */}
+      {/* --- Sección de Tareas de Compliance Pendientes (Parte de CU-001) --- */}
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
         <Card shadow="md" rounded="lg" p={5}>
           <CardHeader p={0} mb={3}>
@@ -128,15 +124,21 @@ const dashboard = () => {
         </Card>
       </SimpleGrid>
 
-      {/* Sección Proyección de Cumplimiento ISO (Parte de CU-001) */}
+      {/* --- Sección Proyección de Cumplimiento ISO (Parte de CU-001) --- */}
       <Card shadow="md" rounded="lg" p={5} mb={8}>
         <Heading as="h3" size="md" textAlign="center" mb={4} color="purple.800">
           <FaChartLine style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '0.5rem' }} /> Proyección de Cumplimiento ISO 9001
         </Heading>
         {datosInsuficientesTendencias ? (
-            <Text textAlign="center" color="gray.600">
+            <Text textAlign="center" color="gray.600"> {/* CORRECCIÓN: Aquí es donde estaba el error */}
                 No hay datos suficientes para proyectar tendencias. Complete más checklists para activar este análisis.
-                <Button variant="outline" colorScheme="purple" size="sm" ml={3} onClick={() => window.location.href='/listado-checklists'}>
+                <Button 
+                    variant="outline" 
+                    colorScheme="purple" 
+                    size="sm" 
+                    ml={3} 
+                    onClick={() => window.location.href='/listado-checklists'} 
+                >
                     Ir a Autoevaluaciones
                 </Button>
             </Text>
@@ -165,7 +167,7 @@ const dashboard = () => {
         )}
       </Card>
 
-      {/* Sección de Acciones de Gestión de Riesgos y Auditorías (Parte de CU-002) */}
+      {/* --- Sección de Acciones de Gestión de Riesgos y Auditorías (Parte de CU-002) --- */}
       <Heading as="h2" size="xl" textAlign="center" mb={6} mt={10} color="purple.800">Gestión Estratégica</Heading>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
         <Card shadow="md" rounded="lg" p={5}>
@@ -204,7 +206,7 @@ const dashboard = () => {
         </Card>
       </SimpleGrid>
 
-      {/* Sección para Análisis y Priorización de Riesgos (Parte de CU-002) */}
+      {/* --- Sección para Análisis y Priorización de Riesgos (Parte de CU-002) --- */}
       <Card shadow="md" rounded="lg" p={5} mb={8}>
         <Heading as="h3" size="md" textAlign="center" mb={4} color="purple.800">
           <FaChartPie style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '0.5rem' }} /> Análisis y Priorización de Riesgos
@@ -223,24 +225,18 @@ const dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#f0f0f0', color: '#5e4d7d' }}>Bajo</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Baja-Bajo'].color }}>{mapaCalorRiesgos['Baja-Bajo'].count}</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Media-Bajo'].color }}>{mapaCalorRiesgos['Media-Bajo'].count}</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Alta-Bajo'].color }}>{mapaCalorRiesgos['Alta-Bajo'].count}</td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#f0f0f0', color: '#5e4d7d' }}>Medio</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Baja-Medio'].color }}>{mapaCalorRiesgos['Baja-Medio'].count}</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Media-Medio'].color }}>{mapaCalorRiesgos['Media-Medio'].count}</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Alta-Medio'].color }}>{mapaCalorRiesgos['Alta-Medio'].count}</td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#f0f0f0', color: '#5e4d7d' }}>Alto</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Baja-Alto'].color }}>{mapaCalorRiesgos['Baja-Alto'].count}</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Media-Alto'].color }}>{mapaCalorRiesgos['Media-Alto'].count}</td>
-                    <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: mapaCalorRiesgos['Alta-Alto'].color }}>{mapaCalorRiesgos['Alta-Alto'].count}</td>
-                  </tr>
+                  {['Alto', 'Medio', 'Bajo'].map(impacto => (
+                    <tr key={impacto}>
+                      <td style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: '#f0f0f0', color: '#5e4d7d' }}>{impacto}</td>
+                      {['Baja', 'Media', 'Alta'].map(probabilidad => {
+                        const key = `${probabilidad}-${impacto}`;
+                        const cellData = mapaCalorRiesgos[key];
+                        return (
+                          <td key={key} style={{ padding: '8px', border: '1px solid #ddd', backgroundColor: cellData?.color || '#fff' }}>{cellData?.count || 0}</td>
+                        );
+                      })}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </Box>
@@ -269,7 +265,7 @@ const dashboard = () => {
         </Flex>
       </Card>
 
-      {/* Sección para Priorización de Mejoras por Área Auditada (Parte de CU-002) */}
+      {/* --- Sección para Priorización de Mejoras por Área Auditada (Parte de CU-002) --- */}
       <Card shadow="md" rounded="lg" p={5} mb={8}>
         <Heading as="h3" size="md" textAlign="center" mb={4} color="purple.800">
           <FaBullseye style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '0.5rem' }} /> Priorización de Mejoras por Área Auditada
@@ -293,7 +289,7 @@ const dashboard = () => {
           </Text>
         ) : (
           <Box overflowX="auto" pb={2}>
-            <table className="table" style={{ width: '100%', minWidth: '400px' }}> {/* Basic table styling */}
+            <table className="table" style={{ width: '100%', minWidth: '400px' }}>
               <thead>
                 <tr>
                   <th style={{ color: '#5e4d7d' }}>Área Auditada</th>

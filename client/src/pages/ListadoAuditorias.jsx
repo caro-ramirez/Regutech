@@ -1,5 +1,7 @@
-// ListadoAuditorias.jsx
+// client/src/components/ListadoAuditorias.jsx
 import React from 'react';
+import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Flex, useColorModeValue, Card } from '@chakra-ui/react';
+import { FaClipboardList, FaPlusCircle } from 'react-icons/fa'; // Iconos
 
 const ListadoAuditorias = () => {
   const planesAuditoria = [
@@ -8,62 +10,70 @@ const ListadoAuditorias = () => {
     { id: 3, fecha: '2025-07-01', area: 'Políticas de Ciberseguridad', responsable: 'Sofía Díaz' },
   ];
 
+  const cardBg = useColorModeValue('white', 'gray.700');
+  const textColor = useColorModeValue('purple.800', 'purple.100');
+  const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
+  const headerBg = useColorModeValue('purple.50', 'gray.800');
+
   const handleRegistrarHallazgos = (id) => {
-    alert(`Redirigiendo para registrar hallazgos para el Plan de Auditoría ${id}`);
+    console.log(`Redirigiendo para registrar hallazgos para el Plan de Auditoría ${id}`);
     window.location.href = `/registrar-hallazgos/${id}`;
   };
 
   return (
-    <div className="container py-5">
-      <h1 className="mb-4 text-center text-dark-blue">Gestión de Auditorías Internas</h1>
+    <Box p={5}>
+      <Heading as="h1" size="xl" textAlign="center" mb={6} color={textColor}>Gestión de Auditorías Internas</Heading>
       
-      <div className="text-end mb-3">
-        <button className="btn btn-primary-custom" onClick={() => window.location.href='/nuevo-plan-auditoria'}>
+      <Flex justify="flex-end" mb={4}>
+        <Button colorScheme="purple" leftIcon={<FaPlusCircle />} onClick={() => window.location.href='/formulario-alta-auditoria'}>
           Nuevo Plan de Auditoría
-        </button>
-      </div>
+        </Button>
+      </Flex>
 
       {planesAuditoria.length === 0 ? (
-        <div className="alert alert-info text-center" role="alert">
-          No hay planes de auditoría interna registrados en este momento.
-        </div>
+        <Flex justify="center" align="center" minH="200px" bg={cardBg} borderRadius="lg" shadow="md" p={5}>
+          <Text fontSize="lg" color={mutedTextColor}>
+            No hay planes de auditoría interna registrados en este momento.
+          </Text>
+        </Flex>
       ) : (
-        <div className="card shadow-sm p-4">
-          <table className="table table-hover align-middle">
-            <thead>
-              <tr>
-                <th scope="col" className="text-hero-muted">Fecha</th>
-                <th scope="col" className="text-hero-muted">Área a Auditar</th>
-                <th scope="col" className="text-hero-muted">Responsable</th>
-                <th scope="col" className="text-hero-muted">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
+        <Card bg={cardBg} shadow="md" rounded="lg" p={5}>
+          <Table variant="simple" size="md">
+            <Thead>
+              <Tr bg={headerBg}>
+                <Th color={textColor}>Fecha</Th>
+                <Th color={textColor}>Área a Auditar</Th>
+                <Th color={textColor}>Responsable</Th>
+                <Th color={textColor}>Acciones</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
               {planesAuditoria.map(plan => (
-                <tr key={plan.id}>
-                  <td>{plan.fecha}</td>
-                  <td>{plan.area}</td>
-                  <td>{plan.responsable}</td>
-                  <td>
-                    <button 
-                      className="btn btn-primary-custom btn-sm" 
+                <Tr key={plan.id}>
+                  <Td color={mutedTextColor}>{plan.fecha}</Td>
+                  <Td color={mutedTextColor}>{plan.area}</Td>
+                  <Td color={mutedTextColor}>{plan.responsable}</Td>
+                  <Td>
+                    <Button 
+                      colorScheme="purple" 
+                      size="sm" 
                       onClick={() => handleRegistrarHallazgos(plan.id)}
                     >
                       Registrar Hallazgos
-                    </button>
-                  </td>
-                </tr>
+                    </Button>
+                  </Td>
+                </Tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </Tbody>
+          </Table>
+        </Card>
       )}
-      <div className="text-center mt-4">
-        <button className="btn btn-outline-custom" onClick={() => window.history.back()}>
+      <Flex justify="center" mt={6}>
+        <Button variant="outline" colorScheme="purple" onClick={() => window.history.back()}>
           Volver al Dashboard
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Flex>
+    </Box>
   );
 };
 
