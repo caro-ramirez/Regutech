@@ -1,7 +1,7 @@
 // client/src/components/ListadoChecklists.jsx
 import React from 'react';
 import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Progress, Badge, Flex, useColorModeValue, Card } from '@chakra-ui/react';
-import { FaListCheck, FaCheckCircle, FaHourglassHalf } from 'react-icons/fa'; // Iconos
+import { FaTasks, FaCheckCircle, FaHourglassHalf } from 'react-icons/fa'; // Iconos
 
 const ListadoChecklists = () => {
   const checklists = [

@@ -1,7 +1,7 @@
 // client/src/pages/Dashboard.jsx
 import React, { useState } from 'react';
 import { Box, Heading, Text, Flex, SimpleGrid, Card, CardHeader, CardBody, Button, Link, Progress, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea, Select } from '@chakra-ui/react';
-import { FaExclamationTriangle, FaListCheck, FaScroll, FaChartLine, FaChartPie, FaBullseye, FaLightbulb, FaArrowAltCircleDown, FaExclamationCircle, FaCheckCircle, FaSave, FaArrowLeft, FaArrowRight, FaBookOpen, FaHourglassHalf, FaClipboardList } from 'react-icons/fa'; // Asegúrate de importar todos los iconos
+import { FaExclamationTriangle, FaTasks, FaScroll, FaChartLine, FaChartPie, FaBullseye, FaLightbulb, FaArrowAltCircleDown, FaExclamationCircle, FaCheckCircle, FaSave, FaArrowLeft, FaArrowRight, FaBookOpen, FaHourglassHalf, FaClipboardList } from 'react-icons/fa'; // Asegúrate de importar todos los iconos
 
 const Dashboard = () => { // Renombrado de DashboardPrincipal a Dashboard
   // --- Datos de Ejemplo para CU-001 (Optimizar Cumplimiento Regulatorio) ---
